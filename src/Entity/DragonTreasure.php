@@ -12,6 +12,7 @@ use App\Repository\DragonTreasureRepository;
 use Carbon\Carbon;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Serializer\Attribute\Groups;
 
 #[ORM\Entity(repositoryClass: DragonTreasureRepository::class)]
 #[ApiResource(
@@ -23,6 +24,12 @@ use Doctrine\ORM\Mapping as ORM;
         new Post(),
         new Put(),
         new Patch(),
+    ],
+    normalizationContext: [
+        'groups' => ['treasure:read']
+    ],
+    denormalizationContext: [
+        'groups' => ['treasure:write']
     ]
 )]
 class DragonTreasure
@@ -33,25 +40,29 @@ class DragonTreasure
     private ?int $id = null;
 
     #[ORM\Column(length: 255)]
+    #[Groups(['treasure:read', 'treasure:write'])]
     private ?string $name = null;
 
     #[ORM\Column(type: Types::TEXT)]
+    #[Groups(['treasure:read', 'treasure:write'])]
     private ?string $description = null;
 
     /**
      * The estimated value of this treasure, in gold coins.
      */
     #[ORM\Column]
+    #[Groups(['treasure:read', 'treasure:write'])]
     private ?int $value = null;
 
     #[ORM\Column]
+    #[Groups(['treasure:read', 'treasure:write'])]
     private ?int $coolFactor = null;
 
     #[ORM\Column]
     private ?\DateTimeImmutable $plunderedAt;
 
     #[ORM\Column]
-    private ?bool $isPublished = null;
+    private ?bool $isPublished = false;
 
     public function __construct() {
         $this->plunderedAt = new \DateTimeImmutable();
@@ -60,6 +71,15 @@ class DragonTreasure
     public function getId(): ?int
     {
         return $this->id;
+    }
+    public function setPlunderedAt(?\DateTimeImmutable $plunderedAt): void
+    {
+        $this->plunderedAt = $plunderedAt;
+    }
+
+    public function setDescription(?string $description): void
+    {
+        $this->description = $description;
     }
 
     public function getName(): ?string
@@ -80,6 +100,7 @@ class DragonTreasure
     }
 
 
+    #[Groups(['treasure:write'])]
     public function setTextDescription(string $description): static
     {
         $this->description = nl2br($description);
@@ -129,6 +150,7 @@ class DragonTreasure
         return $this->plunderedAt;
     }
 
+    #[Groups(['treasure:read'])]
     public function getPlunderedAtAgo(): string
     {
         return Carbon::instance($this->plunderedAt)->diffForHumans();
