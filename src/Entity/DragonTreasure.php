@@ -21,19 +21,26 @@ use Symfony\Component\Serializer\Attribute\SerializedName;
 
 #[ORM\Entity(repositoryClass: DragonTreasureRepository::class)]
 #[ApiResource(
-    shortName: 'Treasure',
-    description: 'A rare and valuable treasure',
-    operations: [
+    shortName                   : 'Treasure',
+    description                 : 'A rare and valuable treasure',
+    operations                  : [
         new Get(uriTemplate: '/dragon-plunder/{id}'),
         new GetCollection(uriTemplate: '/dragon-plunder'),
         new Post(),
         new Put(),
         new Patch(),
     ],
-    normalizationContext: [
+    formats                     : [
+        'jsonld',
+        'json',
+        'html',
+        'jsonhal' => 'application/hal+json',
+        'csv' => 'text/csv'
+    ],
+    normalizationContext        : [
         'groups' => ['treasure:read']
     ],
-    denormalizationContext: [
+    denormalizationContext      : [
         'groups' => ['treasure:write']
     ],
     paginationClientItemsPerPage: 10
