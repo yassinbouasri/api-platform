@@ -13,6 +13,7 @@ use Carbon\Carbon;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Serializer\Attribute\Groups;
+use Symfony\Component\Serializer\Attribute\SerializedName;
 
 #[ORM\Entity(repositoryClass: DragonTreasureRepository::class)]
 #[ApiResource(
@@ -64,7 +65,8 @@ class DragonTreasure
     #[ORM\Column]
     private ?bool $isPublished = false;
 
-    public function __construct() {
+    public function __construct(string $name) {
+        $this->name = $name;
         $this->plunderedAt = new \DateTimeImmutable();
     }
 
@@ -87,20 +89,12 @@ class DragonTreasure
         return $this->name;
     }
 
-    public function setName(string $name): static
-    {
-        $this->name = $name;
-
-        return $this;
-    }
-
     public function getDescription(): ?string
     {
         return $this->description;
     }
-
-
     #[Groups(['treasure:write'])]
+    #[SerializedName('description')]
     public function setTextDescription(string $description): static
     {
         $this->description = nl2br($description);
