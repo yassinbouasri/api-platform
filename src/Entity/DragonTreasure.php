@@ -31,7 +31,8 @@ use Symfony\Component\Serializer\Attribute\SerializedName;
     ],
     denormalizationContext: [
         'groups' => ['treasure:write']
-    ]
+    ],
+    paginationClientItemsPerPage: 10
 )]
 class DragonTreasure
 {
