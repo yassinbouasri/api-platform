@@ -3,6 +3,7 @@
 namespace App\Entity;
 
 use ApiPlatform\Doctrine\Orm\Filter\BooleanFilter;
+use ApiPlatform\Doctrine\Orm\Filter\RangeFilter;
 use ApiPlatform\Doctrine\Orm\Filter\SearchFilter;
 use ApiPlatform\Metadata\ApiFilter;
 use ApiPlatform\Metadata\ApiResource;
@@ -60,6 +61,7 @@ class DragonTreasure
      */
     #[ORM\Column]
     #[Groups(['treasure:read', 'treasure:write'])]
+    #[ApiFilter(RangeFilter::class)]
     private ?int $value = null;
 
     #[ORM\Column]
