@@ -14,8 +14,8 @@ class AppFixtures extends Fixture
         // $product = new Product();
         // $manager->persist($product);
 
-        DragonTreasureFactory::createMany(40);
         UserFactory::createMany(10);
+        DragonTreasureFactory::createMany(40);
 
         $manager->flush();
     }
