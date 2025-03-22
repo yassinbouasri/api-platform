@@ -39,15 +39,15 @@ use Symfony\Component\Validator\Constraints\NotBlank;
         'jsonhal' => 'application/hal+json',
         'csv' => 'text/csv'
     ],
-    normalizationContext        : [
-        'groups' => ['treasure:read']
+    normalizationContext: [
+        'groups' => ['treasure:read'],
     ],
     denormalizationContext      : [
         'groups' => ['treasure:write']
     ],
     paginationClientItemsPerPage: 10
 )]
-//#[ApiFilter(BooleanFilter::class, properties: ['isPublished'])]
+#[ApiFilter(BooleanFilter::class, properties: ['isPublished'])]
 class DragonTreasure
 {
     #[ORM\Id]
@@ -89,6 +89,11 @@ class DragonTreasure
     #[ORM\Column]
     #[ApiFilter(BooleanFilter::class)]
     private ?bool $isPublished = false;
+
+    #[ORM\ManyToOne(inversedBy: 'dragonTreasures')]
+    #[ORM\JoinColumn(nullable: false)]
+    #[Groups(['treasure:read', 'treasure:write'])]
+    private ?User $owner = null;
 
     public function __construct(string $name) {
         $this->name = $name;
@@ -173,6 +178,18 @@ class DragonTreasure
     public function getPlunderedAtAgo(): string
     {
         return Carbon::instance($this->plunderedAt)->diffForHumans();
+    }
+
+    public function getOwner(): User
+    {
+        return $this->owner;
+    }
+
+    public function setOwner(User $owner): static
+    {
+        $this->owner = $owner;
+
+        return $this;
     }
 
 }
