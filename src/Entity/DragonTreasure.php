@@ -188,7 +188,7 @@ class DragonTreasure
         return $this->owner;
     }
 
-    public function setOwner(User $owner): static
+    public function setOwner(?User $owner): static
     {
         $this->owner = $owner;
 
