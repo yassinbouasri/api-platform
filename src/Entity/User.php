@@ -6,6 +6,7 @@ use ApiPlatform\Metadata\ApiFilter;
 use ApiPlatform\Metadata\ApiResource;
 use ApiPlatform\Metadata\Get;
 use ApiPlatform\Metadata\GetCollection;
+use ApiPlatform\Metadata\Link;
 use ApiPlatform\Metadata\Patch;
 use ApiPlatform\Metadata\Post;
 use ApiPlatform\Metadata\Put;
@@ -33,6 +34,19 @@ use Symfony\Component\Validator\Constraints as Assert;
     ],
     normalizationContext  : ['groups' => ['user:read']],
     denormalizationContext: ['groups' => ['user:write']],
+)]
+#[ApiResource(
+    uriTemplate         : '/treasures/{treasure_id}/owner.{_format}',
+    operations          : [
+        new Get(),
+        ],
+    uriVariables        : [
+        'treasure_id' => new Link(
+            fromProperty: 'owner',
+            fromClass: DragonTreasure::class,
+        )
+    ],
+    normalizationContext: ['groups' => ['user:read']],
 )]
 #[UniqueEntity(fields: ['email', 'username'], message: 'Email or Username is already taken.')]
 #[ApiFilter(PropertyFilter::class)]
