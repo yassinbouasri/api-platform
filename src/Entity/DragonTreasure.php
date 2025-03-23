@@ -50,6 +50,7 @@ use Symfony\Component\Validator\Constraints\NotBlank;
     paginationClientItemsPerPage: 10
 )]
 #[ApiFilter(BooleanFilter::class, properties: ['isPublished'])]
+#[ApiFilter(SearchFilter::class, properties: ['owner.username' => 'partial'])]
 class DragonTreasure
 {
     #[ORM\Id]
@@ -96,6 +97,7 @@ class DragonTreasure
     #[ORM\JoinColumn(nullable: false)]
     #[Groups(['treasure:read', 'treasure:write'])]
     #[Assert\Valid]
+    #[ApiFilter(SearchFilter::class, strategy: 'exact')]
     private ?User $owner = null;
 
     public function __construct(string $name) {
